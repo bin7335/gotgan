@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
 import JSZip from 'jszip'
 import { beforeAll, describe, expect, it } from 'vitest'
@@ -12,18 +12,18 @@ import {
 } from './hwpximport'
 import type { Course } from './types'
 
+// 실물 검증 파일은 실제 학교 데이터라 저장소에 포함하지 않는다 (README 참고).
+const FIXTURE = join(__dirname, '../../fixtures/2026학년도 1학기 시간표(방과후진로포함).hwpx')
+
 let tables: HwpxTable[] = []
 
-beforeAll(async () => {
-  const buf = readFileSync(
-    join(__dirname, '../../fixtures/2026학년도 1학기 시간표(방과후진로포함).hwpx'),
-  )
-  const zip = await JSZip.loadAsync(buf)
-  const xml = await zip.file('Contents/section0.xml')!.async('string')
-  tables = parseHwpxSection(xml)
-})
-
-describe('hwpx 시간표 파서 (실제 운영계획서 파일)', () => {
+describe.runIf(existsSync(FIXTURE))('hwpx 시간표 파서 (실제 운영계획서 파일)', () => {
+  beforeAll(async () => {
+    const buf = readFileSync(FIXTURE)
+    const zip = await JSZip.loadAsync(buf)
+    const xml = await zip.file('Contents/section0.xml')!.async('string')
+    tables = parseHwpxSection(xml)
+  })
   it('표 2개를 찾고 형태를 구분한다: 격자형 + 목록형', () => {
     expect(tables.length).toBe(2)
     expect(classifyTable(tables[0])).toBe('grid')

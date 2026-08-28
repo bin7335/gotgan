@@ -1,19 +1,26 @@
-import { readFileSync } from 'node:fs'
+import { existsSync, readFileSync } from 'node:fs'
 import { join } from 'node:path'
-import { describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it } from 'vitest'
 import * as XLSX from 'xlsx'
 import { isRelevant, parseBudgetRows, suggestKind, type BudgetRow } from './eduimport'
 
+// 실물 검증 파일은 실제 학교 데이터라 저장소에 포함하지 않는다 (README 참고).
+// 파일이 없는 환경(CI 등)에서는 해당 스위트를 건너뛴다.
+const FIXTURE = join(__dirname, '../../fixtures/세출예산집행현황목록.xls')
+
 function loadSample(): BudgetRow[] {
-  const buf = readFileSync(join(__dirname, '../../fixtures/세출예산집행현황목록.xls'))
+  const buf = readFileSync(FIXTURE)
   const wb = XLSX.read(buf, { type: 'buffer' })
   const ws = wb.Sheets[wb.SheetNames[0]]
   const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' }) as unknown[][]
   return parseBudgetRows(rows)
 }
 
-describe('세출예산집행현황 파서 (실제 샘플 파일)', () => {
-  const rows = loadSample()
+describe.runIf(existsSync(FIXTURE))('세출예산집행현황 파서 (실제 샘플 파일)', () => {
+  let rows: BudgetRow[] = []
+  beforeAll(() => {
+    rows = loadSample()
+  })
 
   it('산출내역이 있는 잎 행만 항목으로 추출한다', () => {
     expect(rows.length).toBeGreaterThan(40)
