@@ -4,6 +4,7 @@
 
 > 이 문서는 도구 소개와 더불어, **AI(Claude Code)와 협업해 며칠 만에 실무 도구를 만든 과정·기술 선택·시행착오**를 기록합니다. 팀원들과 "학교 업무 도구를 AI로 어떻게 만들 수 있는가"를 이야기하기 위한 자료입니다.
 
+- **접속 주소**: <https://bin7335.github.io/gotgan/> — 예시 데이터로 둘러보기: [?sample](https://bin7335.github.io/gotgan/?sample)
 - **배포**: GitHub Pages (main 브랜치 push 시 자동 배포)
 - **PRD**: 요구사항과 의사결정 이력 전체를 버전(v0.1~v0.13)으로 기록한 문서를 별도 관리
 
