@@ -1,0 +1,6 @@
+node_modules
+dist
+*.local
+
+# 실제 학교 데이터가 든 검증용 파일 (로컬 전용 — 공유 금지)
+fixtures/
